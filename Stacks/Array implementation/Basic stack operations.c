@@ -2,7 +2,6 @@
 
 #include<stdio.h>
 #include<stdbool.h>
-#include<stdlib.h>
 #define MAX_SIZE 3
 
 typedef struct {
