@@ -1,4 +1,4 @@
-*prefix expression evaluation*/
+/*prefix expression evaluation*/
 
 #include<stdio.h>
 #include<stdbool.h>
