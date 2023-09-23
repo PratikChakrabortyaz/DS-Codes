@@ -1,4 +1,4 @@
-/*Basic queue queue operations. Not menu driven*/
+/*Basic linear queue operations. Not menu driven*/
 #include <stdio.h>
 #include <stdbool.h>
 #define MAX 3
