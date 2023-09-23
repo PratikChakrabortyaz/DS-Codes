@@ -55,7 +55,7 @@ void display(Queue *q) {
     }
 }
 
-int main() {
+void main() {
     Queue q;
     initialize(&q);
     dequeue(&q);
@@ -66,6 +66,5 @@ int main() {
     dequeue(&q);
     display(&q);
 
-    return 0;
 }
 
