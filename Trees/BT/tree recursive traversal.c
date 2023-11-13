@@ -11,6 +11,15 @@ struct Node {
 // Typedef for simplicity
 typedef struct Node* Nodeptr;
 
+// Structure to represent a queue node for level order traversal
+struct QueueNode {
+    Nodeptr node;
+    struct QueueNode* next;
+};
+
+// Typedef for simplicity
+typedef struct QueueNode* QueueNodePtr;
+
 // Function to create a new node
 Nodeptr createNode(int data) {
     Nodeptr newNode = (Nodeptr)malloc(sizeof(struct Node));
@@ -37,6 +46,40 @@ Nodeptr createBinaryTree(int item) {
     }
 
     return NULL;
+}
+
+// Function to enqueue a node in the queue for level order traversal
+void enqueue(QueueNodePtr* front, QueueNodePtr* rear, Nodeptr node) {
+    QueueNodePtr newNode = (QueueNodePtr)malloc(sizeof(struct QueueNode));
+    newNode->node = node;
+    newNode->next = NULL;
+
+    if (*rear == NULL) {
+        *front = *rear = newNode;
+    } else {
+        (*rear)->next = newNode;
+        *rear = newNode;
+    }
+}
+
+// Function to dequeue a node from the queue for level order traversal
+Nodeptr dequeue(QueueNodePtr* front, QueueNodePtr* rear) {
+    if (*front == NULL) {
+        return NULL;
+    }
+
+    QueueNodePtr temp = *front;
+    Nodeptr node = temp->node;
+
+    *front = (*front)->next;
+
+    if (*front == NULL) {
+        *rear = NULL;
+    }
+
+    free(temp);
+
+    return node;
 }
 
 // Function for inorder traversal
@@ -66,11 +109,36 @@ void postorderTraversal(Nodeptr root) {
     }
 }
 
+// Function for level order traversal
+void levelOrderTraversal(Nodeptr root) {
+    if (root == NULL) {
+        return;
+    }
+
+    QueueNodePtr front = NULL;
+    QueueNodePtr rear = NULL;
+
+    enqueue(&front, &rear, root);
+
+    while (front != NULL) {
+        Nodeptr current = dequeue(&front, &rear);
+        printf("%d ", current->data);
+
+        if (current->left != NULL) {
+            enqueue(&front, &rear, current->left);
+        }
+
+        if (current->right != NULL) {
+            enqueue(&front, &rear, current->right);
+        }
+    }
+}
+
 int main() {
     int item;
     printf("Creating the tree : \n");
     printf("Enter the root(-1 to stop) :");
-    scanf("%d",&item);
+    scanf("%d", &item);
     Nodeptr root = createBinaryTree(item);
 
     int choice;
@@ -80,7 +148,8 @@ int main() {
         printf("1. Inorder Traversal\n");
         printf("2. Preorder Traversal\n");
         printf("3. Postorder Traversal\n");
-        printf("4. Exit\n");
+        printf("4. Level Order Traversal\n");
+        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -113,15 +182,25 @@ int main() {
                 break;
 
             case 4:
+                if (root == NULL) {
+                    printf("No tree exists. Please create a tree first.\n");
+                    break;
+                }
+                printf("Level Order Traversal: ");
+                levelOrderTraversal(root);
+                break;
+
+            case 5:
                 printf("Exiting the program.\n");
                 break;
 
             default:
-                printf("Invalid choice. Please enter a number between 1 and 4.\n");
+                printf("Invalid choice. Please enter a number between 1 and 5.\n");
         }
-    } while (choice != 4);
+    } while (choice != 5);
 
     return 0;
 }
+
 
 
