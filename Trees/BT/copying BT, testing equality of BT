@@ -1,0 +1,142 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure for a binary tree node
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Typedef for simplicity
+typedef struct Node* Nodeptr;
+
+// Function to create a new node
+Nodeptr createNode(int data) {
+    Nodeptr newNode = (Nodeptr)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+
+// Function to create a binary tree recursively
+Nodeptr createBinaryTree(int item) {
+    int x;
+    if (item != -1) {
+        Nodeptr root = createNode(item);
+
+        printf("Enter the left child of %d: ", item);
+        scanf("%d", &x);
+        root->left = createBinaryTree(x);
+
+        printf("Enter the right child of %d: ", item);
+        scanf("%d", &x);
+        root->right = createBinaryTree(x);
+
+        return root;
+    }
+
+    return NULL;
+}
+
+// Function to create a copy of a binary tree
+Nodeptr copyBinaryTree(Nodeptr root) {
+    if (root == NULL) {
+        return NULL;
+    }
+
+    Nodeptr copyRoot = createNode(root->data);
+    copyRoot->left = copyBinaryTree(root->left);
+    copyRoot->right = copyBinaryTree(root->right);
+
+    return copyRoot;
+}
+
+// Function to check the equality of two binary trees
+int areEqual(Nodeptr root1, Nodeptr root2) {
+    if (root1 == NULL && root2 == NULL) {
+        return 1; // Both trees are empty, considered equal
+    }
+
+    if (root1 != NULL && root2 != NULL) {
+        // Check data, left subtree, and right subtree recursively
+        return (root1->data == root2->data) &&
+               areEqual(root1->left, root2->left) &&
+               areEqual(root1->right, root2->right);
+    }
+
+    // One tree is empty, the other is not, considered not equal
+    return 0;
+}
+
+// Function for inorder traversal
+void inorderTraversal(Nodeptr root) {
+    if (root != NULL) {
+        inorderTraversal(root->left);
+        printf("%d ", root->data);
+        inorderTraversal(root->right);
+    }
+}
+
+int main() {
+    Nodeptr originalTree = NULL;
+    Nodeptr copiedTree = NULL;
+    int choice, item;
+
+    do {
+        printf("\nMenu:\n");
+        printf("1. Create Original Binary Tree\n");
+        printf("2. Create Copy of Binary Tree\n");
+        printf("3. Test Equality of Binary Trees\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Creating the original tree : \n");
+                printf("Enter the root (-1 to stop): ");
+                scanf("%d", &item);
+                originalTree = createBinaryTree(item);
+                break;
+
+            case 2:
+                if (originalTree == NULL) {
+                    printf("No original tree exists. Please create an original tree first.\n");
+                } else {
+                    copiedTree = copyBinaryTree(originalTree);
+                    printf("Copy of the original tree created.\n");
+                }
+                break;
+
+            case 3:
+                if (originalTree == NULL || copiedTree == NULL) {
+                    printf("Both original and copied trees must be created first.\n");
+                } else {
+                    printf("Original Tree Inorder Traversal: ");
+                    inorderTraversal(originalTree);
+                    printf("\n");
+
+                    printf("Copied Tree Inorder Traversal: ");
+                    inorderTraversal(copiedTree);
+                    printf("\n");
+
+                    if (areEqual(originalTree, copiedTree)) {
+                        printf("The original and copied trees are equal.\n");
+                    } else {
+                        printf("The original and copied trees are not equal.\n");
+                    }
+                }
+                break;
+
+            case 4:
+                printf("Exiting the program.\n");
+                break;
+
+            default:
+                printf("Invalid choice. Please enter a number between 1 and 4.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
